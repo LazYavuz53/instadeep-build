@@ -8,6 +8,7 @@
 
 Implements a get_pipeline(**kwargs) method.
 """
+
 import os
 
 import boto3
@@ -50,19 +51,20 @@ from sagemaker.workflow.pipeline_context import PipelineSession
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
+
 def get_sagemaker_client(region):
-     """Gets the sagemaker client.
+    """Gets the sagemaker client.
 
-        Args:
-            region: the aws region to start the session
-            default_bucket: the bucket to use for storing the artifacts
+    Args:
+        region: the aws region to start the session
+        default_bucket: the bucket to use for storing the artifacts
 
-        Returns:
-            `sagemaker.session.Session instance
-        """
-     boto_session = boto3.Session(region_name=region)
-     sagemaker_client = boto_session.client("sagemaker")
-     return sagemaker_client
+    Returns:
+        `sagemaker.session.Session instance
+    """
+    boto_session = boto3.Session(region_name=region)
+    sagemaker_client = boto_session.client("sagemaker")
+    return sagemaker_client
 
 
 def get_session(region, default_bucket):
@@ -87,6 +89,7 @@ def get_session(region, default_bucket):
         default_bucket=default_bucket,
     )
 
+
 def get_pipeline_session(region, default_bucket):
     """Gets the pipeline session based on the region.
 
@@ -107,13 +110,13 @@ def get_pipeline_session(region, default_bucket):
         default_bucket=default_bucket,
     )
 
+
 def get_pipeline_custom_tags(new_tags, region, sagemaker_project_name=None):
     try:
         sm_client = get_sagemaker_client(region)
         response = sm_client.describe_project(ProjectName=sagemaker_project_name)
         sagemaker_project_arn = response["ProjectArn"]
-        response = sm_client.list_tags(
-            ResourceArn=sagemaker_project_arn)
+        response = sm_client.list_tags(ResourceArn=sagemaker_project_arn)
         project_tags = response["Tags"]
         for project_tag in project_tags:
             new_tags.append(project_tag)
@@ -150,7 +153,9 @@ def get_pipeline(
     pipeline_session = get_pipeline_session(region, default_bucket)
 
     # parameters for pipeline execution
-    processing_instance_count = ParameterInteger(name="ProcessingInstanceCount", default_value=1)
+    processing_instance_count = ParameterInteger(
+        name="ProcessingInstanceCount", default_value=1
+    )
     model_approval_status = ParameterString(
         name="ModelApprovalStatus", default_value="PendingManualApproval"
     )
@@ -171,7 +176,9 @@ def get_pipeline(
     step_args = sklearn_processor.run(
         outputs=[
             ProcessingOutput(output_name="train", source="/opt/ml/processing/train"),
-            ProcessingOutput(output_name="validation", source="/opt/ml/processing/validation"),
+            ProcessingOutput(
+                output_name="validation", source="/opt/ml/processing/validation"
+            ),
             ProcessingOutput(output_name="test", source="/opt/ml/processing/test"),
         ],
         code=os.path.join(BASE_DIR, "preprocess.py"),
@@ -183,7 +190,9 @@ def get_pipeline(
     )
 
     # training step for generating model artifacts
-    model_path = f"s3://{sagemaker_session.default_bucket()}/{base_job_prefix}/AbaloneTrain"
+    model_path = (
+        f"s3://{sagemaker_session.default_bucket()}/{base_job_prefix}/AbaloneTrain"
+    )
     image_uri = sagemaker.image_uris.retrieve(
         framework="xgboost",
         region=region,
@@ -255,7 +264,9 @@ def get_pipeline(
             ),
         ],
         outputs=[
-            ProcessingOutput(output_name="evaluation", source="/opt/ml/processing/evaluation"),
+            ProcessingOutput(
+                output_name="evaluation", source="/opt/ml/processing/evaluation"
+            ),
         ],
         code=os.path.join(BASE_DIR, "evaluate.py"),
     )
@@ -274,9 +285,11 @@ def get_pipeline(
     model_metrics = ModelMetrics(
         model_statistics=MetricsSource(
             s3_uri="{}/evaluation.json".format(
-                step_eval.arguments["ProcessingOutputConfig"]["Outputs"][0]["S3Output"]["S3Uri"]
+                step_eval.arguments["ProcessingOutputConfig"]["Outputs"][0]["S3Output"][
+                    "S3Uri"
+                ]
             ),
-            content_type="application/json"
+            content_type="application/json",
         )
     )
     model = Model(
@@ -304,7 +317,7 @@ def get_pipeline(
         left=JsonGet(
             step_name=step_eval.name,
             property_file=evaluation_report,
-            json_path="regression_metrics.mse.value"
+            json_path="regression_metrics.mse.value",
         ),
         right=6.0,
     )

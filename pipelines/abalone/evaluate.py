@@ -1,4 +1,5 @@
 """Evaluation script for measuring mean squared error."""
+
 import json
 import logging
 import pathlib
@@ -14,7 +15,6 @@ from sklearn.metrics import mean_squared_error
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
-
 
 
 if __name__ == "__main__":
@@ -43,10 +43,7 @@ if __name__ == "__main__":
     std = np.std(y_test - predictions)
     report_dict = {
         "regression_metrics": {
-            "mse": {
-                "value": mse,
-                "standard_deviation": std
-            },
+            "mse": {"value": mse, "standard_deviation": std},
         },
     }
 
