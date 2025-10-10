@@ -4,8 +4,6 @@ import argparse
 import logging
 import os
 import pathlib
-import requests
-import tempfile
 
 import boto3
 import numpy as np
