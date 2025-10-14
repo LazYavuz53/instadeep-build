@@ -54,3 +54,7 @@ myenv/
 
 *checkpoints.*
 *checkpoint.*
+
+# Ignore
+*.csv
+*joblib
