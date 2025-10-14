@@ -161,7 +161,7 @@ def get_pipeline(
     )
     input_data = ParameterString(
         name="InputDataUrl",
-        default_value=f"s3://sagemaker-servicecatalog-seedcode-{region}/dataset/abalone-dataset.csv",
+        default_value="s3://instadeep53/datasets/",
     )
 
     # processing step for feature engineering
@@ -180,6 +180,11 @@ def get_pipeline(
                 output_name="validation", source="/opt/ml/processing/validation"
             ),
             ProcessingOutput(output_name="test", source="/opt/ml/processing/test"),
+            ProcessingOutput(output_name="figures", source="/opt/ml/processing/figures"),
+            ProcessingOutput(
+                output_name="metadata", source="/opt/ml/processing/metadata"
+            ),
+            ProcessingOutput(output_name="clean", source="/opt/ml/processing/clean"),
         ],
         code=os.path.join(BASE_DIR, "preprocess.py"),
         arguments=["--input-data", input_data],
