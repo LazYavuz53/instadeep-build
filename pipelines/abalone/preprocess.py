@@ -28,14 +28,20 @@ import re
 from typing import Iterable, Tuple
 
 import boto3
-import matplotlib
 
-matplotlib.use("Agg")
+
+import subprocess
+import sys
+
+subprocess.check_call([
+    sys.executable, "-m", "pip", "install",
+    "matplotlib", "seaborn", "pandas"
+])
+
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
 LOGGER.addHandler(logging.StreamHandler())
-
 
 AA_VOCAB = list("ACDEFGHIKLMNPQRSTVWY")
 AA_SET = set(AA_VOCAB)
