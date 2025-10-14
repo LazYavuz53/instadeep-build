@@ -255,6 +255,18 @@ def get_pipeline(
                 ].S3Output.S3Uri,
                 destination="/opt/ml/processing/test",
             ),
+            ProcessingInput(
+                source=step_process.properties.ProcessingOutputConfig.Outputs[
+                    "metadata"
+                ].S3Output.S3Uri,
+                destination="/opt/ml/processing/metadata",
+            ),
+            ProcessingInput(
+                source=step_process.properties.ProcessingOutputConfig.Outputs[
+                    "clean"
+                ].S3Output.S3Uri,
+                destination="/opt/ml/processing/clean",
+            ),
         ],
         outputs=[
             ProcessingOutput(
