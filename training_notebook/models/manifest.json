@@ -1,0 +1,88 @@
+{
+  "aa_vocab": [
+    "A",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "K",
+    "L",
+    "M",
+    "N",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "V",
+    "W",
+    "Y"
+  ],
+  "allele_max_len": {
+    "HLA-A*02:01": 14,
+    "HLA-A*29:02": 14,
+    "HLA-B*07:02": 14,
+    "HLA-B*40:02": 14,
+    "HLA-B*57:01": 14
+  },
+  "models": [
+    {
+      "allele": "HLA-A*02:01",
+      "path": ".\\models\\model_HLA-A02_01.joblib",
+      "n_train": 2000,
+      "max_len": 14,
+      "model_type": "LogisticRegression",
+      "quick_run": true,
+      "quick_allele_limit": 5,
+      "quick_per_allele_max_n": 2000,
+      "quick_fraction": null
+    },
+    {
+      "allele": "HLA-A*29:02",
+      "path": ".\\models\\model_HLA-A29_02.joblib",
+      "n_train": 2000,
+      "max_len": 14,
+      "model_type": "LogisticRegression",
+      "quick_run": true,
+      "quick_allele_limit": 5,
+      "quick_per_allele_max_n": 2000,
+      "quick_fraction": null
+    },
+    {
+      "allele": "HLA-B*07:02",
+      "path": ".\\models\\model_HLA-B07_02.joblib",
+      "n_train": 2000,
+      "max_len": 14,
+      "model_type": "LogisticRegression",
+      "quick_run": true,
+      "quick_allele_limit": 5,
+      "quick_per_allele_max_n": 2000,
+      "quick_fraction": null
+    },
+    {
+      "allele": "HLA-B*40:02",
+      "path": ".\\models\\model_HLA-B40_02.joblib",
+      "n_train": 2000,
+      "max_len": 14,
+      "model_type": "LogisticRegression",
+      "quick_run": true,
+      "quick_allele_limit": 5,
+      "quick_per_allele_max_n": 2000,
+      "quick_fraction": null
+    },
+    {
+      "allele": "HLA-B*57:01",
+      "path": ".\\models\\model_HLA-B57_01.joblib",
+      "n_train": 2000,
+      "max_len": 14,
+      "model_type": "LogisticRegression",
+      "quick_run": true,
+      "quick_allele_limit": 5,
+      "quick_per_allele_max_n": 2000,
+      "quick_fraction": null
+    }
+  ]
+}
