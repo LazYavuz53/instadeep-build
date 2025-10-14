@@ -15,7 +15,6 @@ import boto3
 import sagemaker
 import sagemaker.session
 
-from sagemaker.estimator import Estimator
 from sagemaker.inputs import TrainingInput
 from sagemaker.model_metrics import (
     MetricsSource,
@@ -26,11 +25,12 @@ from sagemaker.processing import (
     ProcessingOutput,
     ScriptProcessor,
 )
+from sagemaker.sklearn.estimator import SKLearn
 from sagemaker.sklearn.processing import SKLearnProcessor
-from sagemaker.workflow.conditions import ConditionLessThanOrEqualTo
 from sagemaker.workflow.condition_step import (
     ConditionStep,
 )
+from sagemaker.workflow.conditions import ConditionGreaterThanOrEqualTo
 from sagemaker.workflow.functions import (
     JsonGet,
 )
@@ -195,59 +195,47 @@ def get_pipeline(
     )
 
     # training step for generating model artifacts
-    model_path = (
-        f"s3://{sagemaker_session.default_bucket()}/{base_job_prefix}/AbaloneTrain"
-    )
-    image_uri = sagemaker.image_uris.retrieve(
-        framework="xgboost",
-        region=region,
-        version="1.0-1",
-        py_version="py3",
-        instance_type=training_instance_type,
-    )
-    xgb_train = Estimator(
-        image_uri=image_uri,
+    sklearn_train = SKLearn(
+        entry_point="train.py",
+        source_dir=BASE_DIR,
+        framework_version="1.2-1",
         instance_type=training_instance_type,
         instance_count=1,
-        output_path=model_path,
-        base_job_name=f"{base_job_prefix}/abalone-train",
+        base_job_name=f"{base_job_prefix}/sklearn-abalone-train",
         sagemaker_session=pipeline_session,
         role=role,
+        hyperparameters={
+            "epochs": 10,
+            "chunk-size": 50_000,
+            "max-iter": 5,
+            "random-state": 53,
+        },
     )
-    xgb_train.set_hyperparameters(
-        objective="reg:linear",
-        num_round=50,
-        max_depth=5,
-        eta=0.2,
-        gamma=4,
-        min_child_weight=6,
-        subsample=0.7,
-        silent=0,
-    )
-    step_args = xgb_train.fit(
+    step_args = sklearn_train.fit(
         inputs={
-            "train": TrainingInput(
+            "clean": TrainingInput(
                 s3_data=step_process.properties.ProcessingOutputConfig.Outputs[
-                    "train"
+                    "clean"
                 ].S3Output.S3Uri,
                 content_type="text/csv",
             ),
-            "validation": TrainingInput(
+            "metadata": TrainingInput(
                 s3_data=step_process.properties.ProcessingOutputConfig.Outputs[
-                    "validation"
+                    "metadata"
                 ].S3Output.S3Uri,
-                content_type="text/csv",
+                content_type="application/json",
             ),
         },
     )
     step_train = TrainingStep(
-        name="TrainAbaloneModel",
+        name="TrainAlleleClassifiers",
         step_args=step_args,
     )
 
     # processing step for evaluation
+    sklearn_image_uri = sklearn_train.training_image_uri()
     script_eval = ScriptProcessor(
-        image_uri=image_uri,
+        image_uri=sklearn_image_uri,
         command=["python3"],
         instance_type=processing_instance_type,
         instance_count=1,
@@ -298,14 +286,14 @@ def get_pipeline(
         )
     )
     model = Model(
-        image_uri=image_uri,
+        image_uri=sklearn_image_uri,
         model_data=step_train.properties.ModelArtifacts.S3ModelArtifacts,
         sagemaker_session=pipeline_session,
         role=role,
     )
     step_args = model.register(
-        content_types=["text/csv"],
-        response_types=["text/csv"],
+        content_types=["application/json"],
+        response_types=["application/json"],
         inference_instances=["ml.t2.medium", "ml.m5.large"],
         transform_instances=["ml.m5.large"],
         model_package_group_name=model_package_group_name,
@@ -318,17 +306,17 @@ def get_pipeline(
     )
 
     # condition step for evaluating model quality and branching execution
-    cond_lte = ConditionLessThanOrEqualTo(
+    cond_gte = ConditionGreaterThanOrEqualTo(
         left=JsonGet(
             step_name=step_eval.name,
             property_file=evaluation_report,
-            json_path="regression_metrics.mse.value",
+            json_path="classification_metrics.accuracy.value",
         ),
-        right=6.0,
+        right=0.5,
     )
     step_cond = ConditionStep(
-        name="CheckMSEAbaloneEvaluation",
-        conditions=[cond_lte],
+        name="CheckAccuracyEvaluation",
+        conditions=[cond_gte],
         if_steps=[step_register],
         else_steps=[],
     )
