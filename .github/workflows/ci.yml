@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for pre-commit
+          fetch-depth: 0  # Required for pre-commit hooks to see full history
 
       - name: Install Git
         run: |
