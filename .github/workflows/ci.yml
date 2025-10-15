@@ -15,6 +15,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for pre-commit
+      
+      - name: Configure Git
+        run: |
+          git config --global user.email "ci@github.com"
+          git config --global user.name "GitHub Actions"
+          git config --global --add safe.directory /__w/${{ github.repository }}
       
       - name: Cache pre-commit
         uses: actions/cache@v4
