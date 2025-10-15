@@ -20,13 +20,25 @@ jobs:
 
       - name: Install Git
         run: |
-          apt-get update && apt-get install -y git
+          apt-get update -y && apt-get install -y git
 
-      - name: Configure Git (mark directory safe)
+      - name: Ensure Git repo exists
         run: |
-          git config --global --add safe.directory /__w/${{ github.repository }}
+          # Some custom containers lose .git when mounted
+          if [ ! -d .git ]; then
+            echo "No .git directory found — reinitializing..."
+            git init
+            git remote add origin "https://github.com/${{ github.repository }}.git"
+            git fetch origin
+            git checkout "${{ github.ref_name }}"
+          fi
+          git rev-parse --is-inside-work-tree
+
+      - name: Configure Git
+        run: |
           git config --global user.email "ci@github.com"
           git config --global user.name "GitHub Actions"
+          git config --global --add safe.directory /__w/${{ github.repository }}
 
       - name: Cache pre-commit
         uses: actions/cache@v4
@@ -51,13 +63,8 @@ jobs:
 
       - name: Install Git
         run: |
-          apt-get update && apt-get install -y git
-
-      - name: Configure Git (mark directory safe)
-        run: |
+          apt-get update -y && apt-get install -y git
           git config --global --add safe.directory /__w/${{ github.repository }}
-          git config --global user.email "ci@github.com"
-          git config --global user.name "GitHub Actions"
 
       - name: Cache pip packages
         uses: actions/cache@v4
