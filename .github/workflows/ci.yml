@@ -16,36 +16,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # required for pre-commit
+          fetch-depth: 0
 
       - name: Install Git
         run: |
           apt-get update && apt-get install -y git
 
-      - name: Verify Git setup
+      - name: Configure Git (mark directory safe)
         run: |
-          which git
-          git --version
-          ls -a
-          git rev-parse --is-inside-work-tree || echo "Not in a git repo"
-
-      - name: Initialize Git if missing
-        run: |
-          # Sometimes container doesn't recognize checkout as a git repo
-          if [ ! -d .git ]; then
-            echo "No .git directory found, initializing..."
-            git init
-            git remote add origin https://github.com/${{ github.repository }}.git
-            git fetch origin
-            git checkout ${{ github.ref_name }}
-          fi
-          git rev-parse --is-inside-work-tree
-
-      - name: Configure Git
-        run: |
+          git config --global --add safe.directory /__w/${{ github.repository }}
           git config --global user.email "ci@github.com"
           git config --global user.name "GitHub Actions"
-          git config --global --add safe.directory /__w/${{ github.repository }}
 
       - name: Cache pre-commit
         uses: actions/cache@v4
@@ -71,6 +52,12 @@ jobs:
       - name: Install Git
         run: |
           apt-get update && apt-get install -y git
+
+      - name: Configure Git (mark directory safe)
+        run: |
+          git config --global --add safe.directory /__w/${{ github.repository }}
+          git config --global user.email "ci@github.com"
+          git config --global user.name "GitHub Actions"
 
       - name: Cache pip packages
         uses: actions/cache@v4
