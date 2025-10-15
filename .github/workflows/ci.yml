@@ -12,6 +12,11 @@ jobs:
     container:
       image: public.ecr.aws/q6p6x7n0/bitbucket-pipeline:latest
 
+    env:
+      # Disable “dubious ownership” protection inside this container only
+      GIT_CEILING_DIRECTORIES: /
+      GIT_SAFE_DIR: /__w/${{ github.repository }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,29 +26,16 @@ jobs:
       - name: Install Git
         run: |
           apt-get update -y && apt-get install -y git
-
-      - name: Configure Git (mark directory safe before anything else)
-        run: |
-          git config --global --add safe.directory /__w/${{ github.repository }}
+          git config --global --add safe.directory "${GIT_SAFE_DIR}"
           git config --global user.email "ci@github.com"
           git config --global user.name "GitHub Actions"
 
-      - name: Debug Git state
+      - name: Verify Git access
         run: |
-          pwd
-          ls -la
-          git status || echo "Git not ready yet, continuing..."
-
-      - name: Ensure Git repo exists
-        run: |
-          if [ ! -d .git ]; then
-            echo "No .git directory found — reinitializing..."
-            git init
-            git remote add origin "https://github.com/${{ github.repository }}.git"
-            git fetch origin
-            git checkout "${{ github.ref_name }}"
-          fi
-          git rev-parse --is-inside-work-tree
+          echo "Git version: $(git --version)"
+          echo "Safe directories:"
+          git config --global --get-all safe.directory || true
+          git status
 
       - name: Cache pre-commit
         uses: actions/cache@v4
@@ -61,6 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: public.ecr.aws/q6p6x7n0/bitbucket-pipeline:latest
+    env:
+      GIT_SAFE_DIR: /__w/${{ github.repository }}
 
     steps:
       - name: Checkout code
@@ -69,10 +63,7 @@ jobs:
       - name: Install Git
         run: |
           apt-get update -y && apt-get install -y git
-
-      - name: Configure Git (safe directory)
-        run: |
-          git config --global --add safe.directory /__w/${{ github.repository }}
+          git config --global --add safe.directory "${GIT_SAFE_DIR}"
           git config --global user.email "ci@github.com"
           git config --global user.name "GitHub Actions"
 
