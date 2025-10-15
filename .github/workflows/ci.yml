@@ -1,0 +1,53 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: public.ecr.aws/q6p6x7n0/bitbucket-pipeline:latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Cache pre-commit
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+      
+      - name: Install pre-commit
+        run: pip install --upgrade pre-commit
+      
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+
+  integration-test:
+    runs-on: ubuntu-latest
+    container:
+      image: public.ecr.aws/q6p6x7n0/bitbucket-pipeline:latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('.pre-commit-config.yaml') }}
+      
+      - name: Install dependencies
+        run: pip install boto3 sagemaker fsspec s3fs tensorflow joblib scikit-learn
+      
+      - name: Run integration tests
+        env:
+          AWS_DEFAULT_REGION: eu-west-1
+          AWS_REGION: eu-west-1
+        run: python3 tests/integration.py
