@@ -45,6 +45,13 @@ Please follow the steps carefully to prepare your environment and align with our
 
 ## 🧩 Software Best Practices
 
+Please note that due to time limitation, I was not able to integrate following CI/CD integrations. I was able to do it in Bitbucket as shown picture below. But, I could not. But I will integrate within 2 days and I can share again if you are interested;
+
+1- Lint Code (Checking th code quality)
+2- Integration test: Whenever a change maded to branch, AWS Sagemaker pipeline runs at back end. If pipeline succesfull, the PR is allowed to merge into master. Please see example in the picture;
+
+![alt text](image-6.png)
+
 ### 1️⃣ Create a New Environment
 ```powershell
 python -m venv myenv
@@ -254,13 +261,6 @@ An **end-to-end ML pipeline** was developed to automate the full workflow — fr
 ![alt text](image-5.png)
 
 </details>
-
----
-
-## 🔀 Summary of Merged PRs
-TODO
-
----
 
 ---
 
