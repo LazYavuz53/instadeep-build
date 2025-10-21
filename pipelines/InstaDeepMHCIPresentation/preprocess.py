@@ -15,9 +15,7 @@ completes.
 """
 
 from __future__ import annotations
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plt
+
 
 import argparse
 import json
@@ -26,17 +24,13 @@ import os
 import pathlib
 import re
 from typing import Iterable, Tuple
-
 import boto3
-
-
 import subprocess
 import sys
 
-subprocess.check_call([
-    sys.executable, "-m", "pip", "install",
-    "matplotlib", "seaborn", "pandas"
-])
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 LOGGER = logging.getLogger(__name__)
@@ -419,4 +413,7 @@ def main(args: Iterable[str] | None = None) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    subprocess.check_call([
+        sys.executable, "-m", "pip", "install",
+        "matplotlib", "seaborn", "pandas"
+    ])
