@@ -23,14 +23,21 @@ import logging
 import os
 import pathlib
 import re
-from typing import Iterable, Tuple
-import boto3
 import subprocess
 import sys
+from typing import Iterable, Tuple
 
-import seaborn as sns
+import boto3
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
+
+
+def ensure_dependencies():
+    """Install required Python packages if missing."""
+    required_packages = ["matplotlib", "seaborn", "pandas"]
+    for package in required_packages:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
 
 LOGGER = logging.getLogger(__name__)
@@ -413,7 +420,5 @@ def main(args: Iterable[str] | None = None) -> None:
 
 
 if __name__ == "__main__":
-    subprocess.check_call([
-        sys.executable, "-m", "pip", "install",
-        "matplotlib", "seaborn", "pandas"
-    ])
+    ensure_dependencies()
+    main()
