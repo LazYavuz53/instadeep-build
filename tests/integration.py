@@ -7,7 +7,7 @@ if 1 == 1:
     from pipelines.InstaDeepMHCIPresentation.pipeline import get_pipeline
 
 region = boto3.Session().region_name
-role = "arn:aws:iam::975628797022:role/service-role/AmazonSageMaker-ExecutionRole-20250826T094769"
+role = "arn:aws:iam::975628797022:role/service-role/AmazonSageMaker-ExecutionRole-20250826T095642"
 
 model_package_group_name = "InstaDeepMHCIPresentationModelPackageGroup"
 pipeline_name = "InstaDeepMHCIPresentationPipeline"
