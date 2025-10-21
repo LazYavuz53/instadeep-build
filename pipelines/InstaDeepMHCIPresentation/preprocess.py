@@ -15,6 +15,9 @@ completes.
 """
 
 from __future__ import annotations
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
 
 import argparse
 import json
@@ -27,21 +30,13 @@ from typing import Iterable, Tuple
 import boto3
 
 
-
 import subprocess
 import sys
 
 subprocess.check_call([
-    sys.executable, "-m", "pip", "install", 
+    sys.executable, "-m", "pip", "install",
     "matplotlib", "seaborn", "pandas"
 ])
-
-import matplotlib
-
-import matplotlib.pyplot as plt
-
-import pandas as pd
-import seaborn as sns
 
 
 LOGGER = logging.getLogger(__name__)
