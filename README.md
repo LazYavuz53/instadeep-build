@@ -45,12 +45,13 @@ Please follow the steps carefully to prepare your environment and align with our
 
 ## 🧩 Software Best Practices
 
-Please note that due to time limitation, I was not able to integrate following CI/CD integrations. I was able to do it in Bitbucket as shown picture below. But, I could not. But I will integrate within 2 days and I can share again if you are interested;
+Following CI/CD are implemented;
 
 1- Lint Code (Checking th code quality)
-2- Integration test: Whenever a change maded to branch, AWS Sagemaker pipeline runs at back end. If pipeline succesfull, the PR is allowed to merge into master. Please see example in the picture;
+2- Unit test
+3- Integration test: Whenever a change maded to branch, AWS Sagemaker pipeline runs at back end. If pipeline succesfull, the PR is allowed to merge into master. Please see example in the picture;
 
-![alt text](image-6.png)
+![alt text](img/image-7.png)
 
 ### 1️⃣ Create a New Environment
 ```powershell
@@ -113,20 +114,20 @@ We use **Jira** as our Agile project management environment to track issues and 
 
 Project cycle is shown in Figure
 
-![alt text](image.png)
+![alt text](img/image.png)
 
 ### 🔄 How to Contribute
 
 1. **Create an Issue**  
    Log a new issue in Jira and assign it to the responsible person.
 
-   ![alt text](image-1.png)
+   ![alt text](img/image-1.png)
 
 2. **Create a Branch**  
    - In Jira, open the ticket and click **“Create Branch.”**  
    - Select the repository and confirm.
 
-   ![alt text](image-2.png)
+   ![alt text](img/image-2.png)
 
 3. **Start Development**
    ```bash
@@ -258,7 +259,7 @@ An **end-to-end ML pipeline** was developed to automate the full workflow — fr
 
 ✅ The pipeline runs successfully end-to-end, ensuring **reproducibility**, **traceability**, and **automation**.
 
-![alt text](image-5.png)
+![alt text](img/image-5.png)
 
 </details>
 
@@ -290,7 +291,7 @@ For applications prioritizing binder discovery (i.e., higher recall), a **tuned 
 |--------------|----------|
 | **Accuracy & ROC AUC** | Consistently high across alleles (~0.85–0.97 range), showing robust allele transferability. |
 
-![alt text](image-3.png)
+![alt text](img/image-3.png)
 
 | **F1-score Variability** | Ranges between ~0.2–0.7+, expected due to allele-specific class imbalance and sample size. |
 | **PR Curves** | Alleles with lower F1 tend to show steeper PR drop-offs, indicating fewer positives or harder boundaries. |
@@ -299,7 +300,7 @@ For applications prioritizing binder discovery (i.e., higher recall), a **tuned 
 **Interpretation:**  
 Per-allele models — each trained with allele-specific maximum sequence lengths — generalize well. However, **thresholding should be allele-aware**, particularly when optimizing for recall or binder prioritization.  
 
-![alt text](image-4.png)
+![alt text](img/image-4.png)
 
 The model demonstrates:  
 - Strong ranking ability overall (**ROC AUC ≈ 0.81**)  
