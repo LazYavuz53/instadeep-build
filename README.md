@@ -1,6 +1,5 @@
-## Layout of the SageMaker ModelBuild Project Template
+## Layout of the project repository
 
-TODO UPDATE ET THE END
 
 ```
 ├── codebuild-buildspec.yml      # Definition used by AWS CodeBuild to run CI jobs
