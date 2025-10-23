@@ -140,7 +140,7 @@ def train_for_allele(
         class_weight = {cls: weight for cls, weight in zip(classes, weights)}
 
         clf = SGDClassifier(
-            loss="log_loss",
+            loss="log",
             penalty="l2",
             random_state=config.random_state,
             max_iter=config.max_iter,

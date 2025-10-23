@@ -15,9 +15,6 @@ completes.
 """
 
 from __future__ import annotations
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plt
 
 import argparse
 import json
@@ -25,23 +22,30 @@ import logging
 import os
 import pathlib
 import re
+import subprocess
+import sys
 from typing import Iterable, Tuple
 
 import boto3
 
 
-import subprocess
-import sys
+def ensure_dependencies():
+    """Install required Python packages if missing, then import them globally."""
+    required_packages = ["matplotlib", "seaborn", "pandas"]
+    for package in required_packages:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-subprocess.check_call([
-    sys.executable, "-m", "pip", "install",
-    "matplotlib", "seaborn", "pandas"
-])
+    # Import dependencies dynamically after installation
+    global pd, sns, plt
+    import pandas as pd
+    import seaborn as sns
+    import matplotlib.pyplot as plt
 
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
 LOGGER.addHandler(logging.StreamHandler())
+
 
 AA_VOCAB = list("ACDEFGHIKLMNPQRSTVWY")
 AA_SET = set(AA_VOCAB)
@@ -418,4 +422,5 @@ def main(args: Iterable[str] | None = None) -> None:
 
 
 if __name__ == "__main__":
+    ensure_dependencies()
     main()
