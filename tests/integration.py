@@ -1,6 +1,5 @@
 from pipelines.InstaDeepMHCIPresentation.pipeline import get_pipeline
 import boto3
-import pytest
 import os
 import sys
 
@@ -29,7 +28,9 @@ def test_pipeline_execution():
     status = execution.describe()
     print(status)
 
-    assert status["PipelineExecutionStatus"] == "Succeeded", f"Pipeline failed with status: {status['PipelineExecutionStatus']}"
+    assert status["PipelineExecutionStatus"] == "Succeeded", (
+        f"Pipeline failed with status: {status['PipelineExecutionStatus']}"
+    )
     print("Success")
 
 
