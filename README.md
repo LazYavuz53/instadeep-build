@@ -47,10 +47,14 @@ Please follow the steps carefully to prepare your environment and align with our
 Following CI/CD are implemented;
 
 1- Lint Code (Checking th code quality)
+
 2- Unit test
+
 3- Integration test: Whenever a change maded to branch, AWS Sagemaker pipeline runs at back end. If pipeline succesfull, the PR is allowed to merge into master. Please see example in the picture;
 
+
 ![alt text](img/image-7.png)
+
 
 ### 1️⃣ Create a New Environment
 ```powershell
